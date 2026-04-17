@@ -1,5 +1,4 @@
 import { A } from "@solidjs/router";
-import Counter from "~/components/Counter.1";
 
 export default function About() {
   return (
