@@ -5,7 +5,7 @@ import {
   onMount,
   useContext,
 } from "solid-js";
-import type { Accessor, ParentComponent, Setter } from "solid-js";
+import type { ParentComponent } from "solid-js";
 import { createStore } from "solid-js/store";
 import type { SetStoreFunction, Store } from "solid-js/store";
 
@@ -28,23 +28,20 @@ export function useGlobalContext() {
 export interface GlobalStateProps {}
 
 export const GlobalState: ParentComponent<GlobalStateProps> = (props) => {
-  const [store, setStore] = createStore({});
+  const [store, setStore] = createStore<StoreType>({});
+  const [skipSave, setSkipSave] = createSignal(true);
 
-  let isInitialLoad = true;
   onMount(() => {
     try {
       const raw = localStorage.getItem("store");
-      if (!raw) throw new Error("store not found");
+      if (!raw) return;
 
-      const parsed: StoreType = JSON.parse(raw!);
-
-      if (parsed) setStore(parsed);
-
-      console.log(parsed);
+      const parsed: StoreType = JSON.parse(raw);
+      if (parsed && typeof parsed === "object") setStore(parsed);
     } catch {
-      /* 损坏或非 JSON：保持默认 store / count */
+      /* 损坏或非 JSON：保持默认 store */
     } finally {
-      isInitialLoad = false;
+      setSkipSave(false);
     }
   });
 
@@ -54,10 +51,9 @@ export const GlobalState: ParentComponent<GlobalStateProps> = (props) => {
   };
 
   createEffect(() => {
-    if (!isInitialLoad) {
-      localStorage.setItem("store", JSON.stringify(store));
-      console.log(localStorage.getItem("store"));
-    }
+    const serialized = JSON.stringify(store);
+    if (skipSave()) return;
+    localStorage.setItem("store", serialized);
   });
 
   return (
