@@ -1,6 +1,1 @@
-[
-  {
-    "label": "dev",
-    "command": "bun dev",
-  },
-]
+[]

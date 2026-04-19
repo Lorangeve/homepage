@@ -2,9 +2,9 @@ import { useLocation } from "@solidjs/router";
 import { For } from "solid-js";
 
 const NAV_ITEMS = [
-  { path: "/", label: "Home" },
-  { path: "/demo", label: "Demo" },
-  { path: "/about", label: "About" },
+  { path: "/", label: "首页" },
+  { path: "/demo", label: "演示" },
+  { path: "/about", label: "关于" },
 ];
 
 export default function Nav() {
