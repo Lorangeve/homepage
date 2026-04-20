@@ -1,23 +1,26 @@
 /**
  * SSR 测试入口：`AavatarCard.webview.test.ts` 通过 `buildSolidSsrEntryModule` 打包后 `import`。
+ * 头像需异步 `fetch` 校验，故用 `renderToStringAsync`。
  */
 import { createComponent } from "solid-js";
-import { renderToString } from "solid-js/web";
+import { renderToStringAsync } from "solid-js/web";
 import { AppState } from "../state/AppState";
 import { Avatar, AvatarCard } from "./AavatarCard";
 
-export function renderAvatarCardHtml() {
-  return renderToString(() =>
+export async function renderAvatarCardHtml() {
+  return renderToStringAsync(() =>
     createComponent(AppState, {
       get children() {
-        return createComponent(AvatarCard, {});
+        return createComponent(AvatarCard, {
+          url: "/favicon.ico",
+        });
       },
     }),
   );
 }
 
-export function renderAvatarValidHtml() {
-  return renderToString(() =>
+export async function renderAvatarValidHtml() {
+  return renderToStringAsync(() =>
     createComponent(Avatar, { url: "https://example.com/favicon.ico" }),
   );
 }
